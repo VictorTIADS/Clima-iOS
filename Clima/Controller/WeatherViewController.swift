@@ -15,6 +15,7 @@ class WeatherViewController: UIViewController {
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var searchTextField: UITextField!
+    @IBOutlet weak var loaderField: UIActivityIndicatorView!
     
     let locationManager = CLLocationManager()
 
@@ -52,6 +53,7 @@ class WeatherViewController: UIViewController {
         closeKeyboard()
         if let city = searchTextField.text {
             weatherManager.fetchWeather(cityName: city)
+            showLoading()
         }
     }
     
@@ -64,9 +66,17 @@ class WeatherViewController: UIViewController {
             self.temperatureLabel.text = weather.temperatureString
             self.cityLabel.text = weather.name
             self.conditionImageView.image = UIImage(systemName: weather.conditionName)
+            self.hideLoader()
         }
     }
     
+    func hideLoader(){
+        loaderField.stopAnimating()
+    }
+    
+    func showLoading() {
+        loaderField.startAnimating()
+    }
     
 }
 
@@ -120,7 +130,8 @@ extension WeatherViewController: CLLocationManagerDelegate {
         if let location = locations.last {
             let lat = location.coordinate.latitude
             let long = location.coordinate.longitude
-            weatherManager.fetchWeather(lat, long)			
+            weatherManager.fetchWeather(lat, long)
+            self.showLoading()
         }
     }
     
